@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
-  s.name = 'logstash-output-example'
-  s.version         = "0.1.3"
+  s.name = 'logstash-output-percolator'
+  s.version         = "0.1.0"
   s.licenses = ["Apache License (2.0)"]
-  s.summary = "This example output does nothing."
+  s.summary = "This plugin takes the id of a document indexed and queries it againts a percolator index, sending matches to redis."
   s.description = "This gem is a logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is not a stand-alone program"
   s.authors = ["Elastic"]
   s.email = "info@elastic.co"
