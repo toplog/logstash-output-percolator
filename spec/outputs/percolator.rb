@@ -26,6 +26,7 @@ class LogStash::Outputs::Percolator < LogStash::Outputs::Base
   config :timeout, :validate => :number, :default => 5
   config :congestion_threshold, :validate => :number, :default => 0
   config :congestion_interval, :validate => :number, :default => 1
+  config :document_id, :validate => :string, :required => true
 
   public
   def register
@@ -40,7 +41,7 @@ class LogStash::Outputs::Percolator < LogStash::Outputs::Base
 
     begin
       index = event.sprintf(@index)
-      document_id = event["logstash_checksum"]
+      document_id = event.sprintf(@document_id)
       message = event["message"]
       key = event["key"]
       timestamp = event["toplog_timestamp"]
@@ -59,10 +60,8 @@ class LogStash::Outputs::Percolator < LogStash::Outputs::Base
           alert_ids << match['_id']
         end
         payload = {
-          'alert_ids' => alert_ids,
-          'document_id' => document_id,
-          'access_token' => key,
-          'toplog_timestamp' => timestamp
+          'matches' => matches,
+          'document_id' => document_id
         }
 
         send_to_redis(payload.to_json)
