@@ -12,7 +12,7 @@ class LogStash::Outputs::Percolator < LogStash::Outputs::Base
   milestone 1
 
   config :index, :validate => :string, :default => "logstash-%{+YYYY.MM.dd}"
-  config :pattern_index, :validate => :string, :default => "logstash-patterns"
+  config :pattern_index, :validate => :string, :default => "logstash-%{+YYYY.MM.dd}"
   config :host, :validate => :string
   config :port, :validate => :string, :default => "9200"
   config :redis_host, :validate => :array, :default => ["127.0.0.1"]
@@ -52,11 +52,11 @@ class LogStash::Outputs::Percolator < LogStash::Outputs::Base
       end
 
       percolation = es_client.percolate index: pattern_index, type: 'automatic', body: { doc: { message: message } }
-      alert_ids = []
+      matches = []
       unless percolation['matches'].empty?
         percolation['matches'].each do | match |
           @logger.debug("#{document_id} matched #{match['_id']}")
-          alert_ids << match['_id']
+          matches << match['_id']
         end
         payload = {
           'matches' => matches,
