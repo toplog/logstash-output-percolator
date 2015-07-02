@@ -42,10 +42,9 @@ class LogStash::Outputs::Percolator < LogStash::Outputs::Base
     begin
       index = event.sprintf(@index)
       document_id = event.sprintf(@document_id)
+      key = event.sprintf(@key)
       message = event["message"]
-      key = event["key"]
-      timestamp = event["toplog_timestamp"]
-      @logger.debug("Percolator args are ", :host => @host, :redis_url => @redis_url, :port => @port, :redis_socket => @redis_socket, :index => index, :document_id => document_id, :percolate_index => pattern_index)
+      @logger.debug("Percolator args are ", :host => @host, :redis_url => @redis_url, :port => @port, :redis_socket => @redis_socket, :key => @key, :index => index, :document_id => document_id, :percolate_index => @pattern_index)
       es_client = Elasticsearch::Client.new host: @host, port: @port
       get_index = es_client.indices.exists index: pattern_index
       unless get_index
